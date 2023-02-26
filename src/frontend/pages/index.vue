@@ -12,16 +12,32 @@
     <el-card style="width: 100%">
       <el-row>
         <el-col :span="24">
-          <el-input v-model="databaseUrl" placeholder="数据库地址" />
+          <el-input
+            v-model="databaseUrl"
+            placeholder="数据库地址"
+            @change="() => setLocalStorage('databaseUrl')"
+          />
         </el-col>
         <el-col :span="24">
-          <el-input v-model="sqlStatement" placeholder="解析语句" />
+          <el-input
+            v-model="sqlStatement"
+            placeholder="解析语句"
+            @change="() => setLocalStorage('sqlStatement')"
+          />
         </el-col>
         <el-col :span="24">
-          <el-input v-model="imageColumnName" placeholder="图片列名" />
+          <el-input
+            v-model="imageColumnName"
+            placeholder="图片列名"
+            @change="() => setLocalStorage('imageColumnName')"
+          />
         </el-col>
         <el-col :span="24">
-          <el-input v-model="imageFolderPath" placeholder="图片文件夹路径" />
+          <el-input
+            v-model="imageFolderPath"
+            placeholder="图片文件夹路径"
+            @change="() => setLocalStorage('imageFolderPath')"
+          />
         </el-col>
         <el-col :span="24">
           <el-button size="large">
@@ -55,11 +71,52 @@ import { useI18n } from 'vue-i18n';
 const { t: $t } = useI18n();
 
 const databaseUrl = ref(
-  'mysql://localhost:3306/test?charset=utf8mb4&user=root&password='
+  localStorage.getItem('databaseUrl') ||
+    (localStorage.setItem(
+      'databaseUrl',
+      'mysql://localhost:3306/test?charset=utf8mb4&user=root&password='
+    ),
+    localStorage.getItem('databaseUrl')) ||
+    ''
 );
-const sqlStatement = ref('select * from test');
-const imageColumnName = ref('');
-const imageFolderPath = ref('D:\\Pictures');
+const sqlStatement = ref(
+  localStorage.getItem('sqlStatement') ||
+    (localStorage.setItem(
+      'sqlStatement',
+      'select * from test where label = "Rin"'
+    ),
+    localStorage.getItem('sqlStatement')) ||
+    ''
+);
+const imageColumnName = ref(
+  localStorage.getItem('imageColumnName') ||
+    (localStorage.setItem('imageColumnName', 'image'),
+    localStorage.getItem('imageColumnName')) ||
+    ''
+);
+const imageFolderPath = ref(
+  localStorage.getItem('imageFolderPath') ||
+    (localStorage.setItem('imageFolderPath', 'D:\\Pictures'),
+    localStorage.getItem('imageFolderPath')) ||
+    ''
+);
+
+function setLocalStorage(label: string) {
+  switch (label) {
+    case 'databaseUrl':
+      localStorage.setItem('databaseUrl', databaseUrl.value);
+      break;
+    case 'sqlStatement':
+      localStorage.setItem('sqlStatement', sqlStatement.value);
+      break;
+    case 'imageColumnName':
+      localStorage.setItem('imageColumnName', imageColumnName.value);
+      break;
+    case 'imageFolderPath':
+      localStorage.setItem('imageFolderPath', imageFolderPath.value);
+      break;
+  }
+}
 
 interface IResult {
   label: string;
