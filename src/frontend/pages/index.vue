@@ -20,9 +20,9 @@
         </el-col>
         <el-col :span="24">
           <el-input
-            v-model="sqlStatement"
-            :placeholder="$t('index.sqlStatement')"
-            @change="() => setLocalStorage('sqlStatement')"
+            v-model="imageTableName"
+            :placeholder="$t('index.imageTableName')"
+            @change="() => setLocalStorage('imageTableName')"
           />
         </el-col>
         <el-col :span="24">
@@ -40,7 +40,7 @@
           />
         </el-col>
         <el-col :span="24">
-          <el-button size="large">
+          <el-button size="large" @click="handleExecute">
             {{ $t('index.startParse') }}
           </el-button>
         </el-col>
@@ -79,13 +79,10 @@ const databaseUrl = ref(
     localStorage.getItem('databaseUrl')) ||
     ''
 );
-const sqlStatement = ref(
-  localStorage.getItem('sqlStatement') ||
-    (localStorage.setItem(
-      'sqlStatement',
-      'select * from test where label = "Rin"'
-    ),
-    localStorage.getItem('sqlStatement')) ||
+const imageTableName = ref(
+  localStorage.getItem('imageTableName') ||
+    (localStorage.setItem('imageTableName', 'testTable'),
+    localStorage.getItem('imageTableName')) ||
     ''
 );
 const imageColumnName = ref(
@@ -106,8 +103,8 @@ function setLocalStorage(label: string) {
     case 'databaseUrl':
       localStorage.setItem('databaseUrl', databaseUrl.value);
       break;
-    case 'sqlStatement':
-      localStorage.setItem('sqlStatement', sqlStatement.value);
+    case 'imageTableName':
+      localStorage.setItem('imageTableName', imageTableName.value);
       break;
     case 'imageColumnName':
       localStorage.setItem('imageColumnName', imageColumnName.value);
@@ -124,6 +121,27 @@ interface IResult {
 }
 
 const result = ref<IResult[]>([{ label: 'Rin', filePath: 'rin-pizacg.jpg' }]);
+
+async function handleExecute() {
+  const res = await fetch('/execute', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      databaseUrl: databaseUrl.value,
+      imageTableName: imageTableName.value,
+      imageColumnName: imageColumnName.value,
+      imageFolderPath: imageFolderPath.value,
+    }),
+  });
+  const data = await res.json();
+  console.log(data);
+  result.value = data['data'].map((item: any) => ({
+    label: `${item}`,
+    filePath: `${item}`,
+  }));
+}
 </script>
 
 <script lang="ts">
