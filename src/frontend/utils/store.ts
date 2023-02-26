@@ -17,11 +17,6 @@ export const useStore = defineStore<
 >('status', {
   state: () => ({
     initialized: false,
-
-    loginName: '',
-    loginToken: '',
-    loginDepartment: '',
-    loginLevel: '',
   }),
   actions: {
     async init() {
