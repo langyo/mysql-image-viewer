@@ -14,42 +14,42 @@
         <el-col :span="24">
           <el-input
             v-model="databaseUrl"
-            placeholder="数据库地址"
+            :placeholder="$t('index.databaseUrl')"
             @change="() => setLocalStorage('databaseUrl')"
           />
         </el-col>
         <el-col :span="24">
           <el-input
             v-model="sqlStatement"
-            placeholder="解析语句"
+            :placeholder="$t('index.sqlStatement')"
             @change="() => setLocalStorage('sqlStatement')"
           />
         </el-col>
         <el-col :span="24">
           <el-input
             v-model="imageColumnName"
-            placeholder="图片列名"
+            :placeholder="$t('index.imageColumnName')"
             @change="() => setLocalStorage('imageColumnName')"
           />
         </el-col>
         <el-col :span="24">
           <el-input
             v-model="imageFolderPath"
-            placeholder="图片文件夹路径"
+            :placeholder="$t('index.imageFolderPath')"
             @change="() => setLocalStorage('imageFolderPath')"
           />
         </el-col>
         <el-col :span="24">
           <el-button size="large">
-            {{ '开始解析' }}
+            {{ $t('index.startParse') }}
           </el-button>
         </el-col>
       </el-row>
     </el-card>
     <el-card style="width: 100%">
       <el-table :data="result">
-        <el-table-column prop="label" label="标签" />
-        <el-table-column prop="filePath" label="图片">
+        <el-table-column prop="label" :label="$t('index.label')" />
+        <el-table-column prop="filePath" :label="$t('index.image')">
           <template #default="scope">
             <div style="width: 100%; display: flex; align-items: center">
               <img
