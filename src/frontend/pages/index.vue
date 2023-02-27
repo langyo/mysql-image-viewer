@@ -84,17 +84,20 @@
     </el-card>
     <el-card style="width: 100%">
       <el-table :data="result">
-        <el-table-column prop="filePath" :label="$t('index.image')">
+        <el-table-column :label="$t('index.image')">
           <template #default="scope">
             <div style="width: 100%; display: flex; align-items: center">
               <img
-                :src="`/image/${scope.row.filePath}`"
+                :src="`/image/${scope.row[`${imageColumnName}`]}`"
                 style="height: 100px; object-fit: cover"
               />
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="label" :label="$t('index.label')" />
+        <el-table-column
+          :prop="`${imageColumnName}`"
+          :label="$t('index.label')"
+        />
         <el-table-column
           v-for="tagColumnName in tagColumnNames"
           :key="tagColumnName"
@@ -126,20 +129,20 @@ const databaseUrl = ref(
   localStorage.getItem('databaseUrl') ||
     (localStorage.setItem(
       'databaseUrl',
-      'mysql://localhost:3306/test?charset=utf8mb4&user=root&password='
+      'mysql://localhost:3306/test?charset=utf8mb4&user=root&password=root'
     ),
     localStorage.getItem('databaseUrl')) ||
     ''
 );
 const imageTableName = ref(
   localStorage.getItem('imageTableName') ||
-    (localStorage.setItem('imageTableName', 'testTable'),
+    (localStorage.setItem('imageTableName', 'image_test'),
     localStorage.getItem('imageTableName')) ||
     ''
 );
 const imageColumnName = ref(
   localStorage.getItem('imageColumnName') ||
-    (localStorage.setItem('imageColumnName', 'image'),
+    (localStorage.setItem('imageColumnName', 'images'),
     localStorage.getItem('imageColumnName')) ||
     ''
 );
@@ -199,7 +202,7 @@ interface IResult {
   filePath: string;
 }
 
-const result = ref<IResult[]>([{ label: 'Rin', filePath: 'rin-pizacg.jpg' }]);
+const result = ref<IResult[]>([]);
 
 async function handleExecute() {
   const res = await fetch('/execute', {
@@ -211,16 +214,14 @@ async function handleExecute() {
       databaseUrl: databaseUrl.value,
       imageTableName: imageTableName.value,
       imageColumnName: imageColumnName.value,
+      tagColumnNames: tagColumnNames.value,
       imageFolderPath: imageFolderPath.value,
     }),
   });
   const data = await res.json();
   console.log(data);
   if (data['success']) {
-    result.value = data['data'].map((item: any) => ({
-      label: `${item}`,
-      filePath: `${item}`,
-    }));
+    result.value = data['data'];
   } else {
     ElMessage.error(data['reason']);
   }

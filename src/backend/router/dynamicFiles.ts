@@ -16,23 +16,43 @@ export async function init() {
 
   router.post('/execute', async (ctx) => {
     try {
-      const { databaseUrl, imageTableName, imageColumnName, imageFolderPath } =
-        ctx.request.body;
+      const {
+        databaseUrl,
+        imageTableName,
+        imageColumnName,
+        tagColumnNames,
+        imageFolderPath,
+      }: {
+        databaseUrl: string;
+        imageTableName: string;
+        imageColumnName: string;
+        tagColumnNames: string[];
+        imageFolderPath: string;
+      } = ctx.request.body;
 
       folderPath = `${imageFolderPath}`;
 
       const db = new Sequelize(`${databaseUrl}`);
       await db.authenticate();
 
-      const table = db.define(`${imageTableName}`, {
-        [`${imageColumnName}`]: DataTypes.STRING,
-      });
+      const table = db.define(
+        `${imageTableName}`,
+        tagColumnNames.reduce(
+          (acc, cur) => ({
+            ...acc,
+            [`${cur}`]: DataTypes.STRING,
+          }),
+          {
+            [`${imageColumnName}`]: DataTypes.STRING,
+          }
+        )
+      );
       const ret = await table.findAll({
-        attributes: [`${imageColumnName}`],
+        attributes: [`${imageColumnName}`, ...tagColumnNames],
       });
       ctx.body = {
         success: true,
-        data: ret.map((n: any) => n[`${imageColumnName}`]),
+        data: ret,
       };
     } catch (err) {
       console.error(err);
