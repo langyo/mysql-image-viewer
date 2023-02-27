@@ -4,26 +4,22 @@ import { join } from 'path';
 import { router } from '.';
 
 export async function init() {
-  const htmlFileRaw = await readFile(
-    join(process.cwd(), './src/backend/dist/index.html')
-  );
-  const jsFileRaw = await readFile(
-    join(process.cwd(), './src/backend/dist/index.bundle.js')
-  );
-  const cssFileRaw = await readFile(
-    join(process.cwd(), './src/backend/dist/index.bundle.css')
-  );
-
   router.get('/', async (ctx) => {
     ctx.type = 'text/html';
-    ctx.body = htmlFileRaw;
+    ctx.body = await readFile(
+      join(process.cwd(), './src/backend/dist/index.html')
+    );
   });
   router.get('/index.bundle.js', async (ctx) => {
     ctx.type = 'application/javascript';
-    ctx.body = jsFileRaw;
+    ctx.body = await readFile(
+      join(process.cwd(), './src/backend/dist/index.bundle.js')
+    );
   });
   router.get('/index.bundle.css', async (ctx) => {
     ctx.type = 'text/css';
-    ctx.body = cssFileRaw;
+    ctx.body = await readFile(
+      join(process.cwd(), './src/backend/dist/index.bundle.css')
+    );
   });
 }
