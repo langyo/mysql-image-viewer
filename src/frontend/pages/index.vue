@@ -50,8 +50,33 @@
         <el-col :span="24">
           <el-divider />
         </el-col>
+        <el-row
+          style="width: 100%; margin-bottom: 8px"
+          v-for="(_, index) in tagColumnNames"
+          :key="index"
+        >
+          <el-col :span="21">
+            <el-input
+              v-model="tagColumnNames[index]"
+              @change="(val) => handleChangeLine(index, val)"
+            />
+          </el-col>
+          <el-col :span="3">
+            <el-button type="danger" @click="() => handleRemoveLine(index)">
+              {{ $t('index.removeLine') }}
+            </el-button>
+          </el-col>
+        </el-row>
         <el-col :span="24">
-          <el-button size="large" @click="handleExecute">
+          <el-button @click="handleAddLine">
+            {{ $t('index.addLine') }}
+          </el-button>
+        </el-col>
+        <el-col :span="24">
+          <el-divider />
+        </el-col>
+        <el-col :span="24">
+          <el-button type="primary" @click="handleExecute">
             {{ $t('index.startParse') }}
           </el-button>
         </el-col>
@@ -59,7 +84,6 @@
     </el-card>
     <el-card style="width: 100%">
       <el-table :data="result">
-        <el-table-column prop="label" :label="$t('index.label')" />
         <el-table-column prop="filePath" :label="$t('index.image')">
           <template #default="scope">
             <div style="width: 100%; display: flex; align-items: center">
@@ -70,6 +94,13 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column prop="label" :label="$t('index.label')" />
+        <el-table-column
+          v-for="tagColumnName in tagColumnNames"
+          :key="tagColumnName"
+          :prop="tagColumnName"
+          :label="tagColumnName"
+        />
       </el-table>
     </el-card>
   </div>
@@ -87,6 +118,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { isNil } from 'lodash-es';
 
 const { t: $t } = useI18n();
 
@@ -111,6 +143,12 @@ const imageColumnName = ref(
     localStorage.getItem('imageColumnName')) ||
     ''
 );
+const tagColumnNames = ref<string[]>(
+  (!isNil(localStorage.getItem('tagColumnNames')) &&
+    JSON.parse(localStorage.getItem('tagColumnNames')!)) ||
+    (localStorage.setItem('tagColumnNames', '[]'), []) ||
+    []
+);
 const imageFolderPath = ref(
   localStorage.getItem('imageFolderPath') ||
     (localStorage.setItem('imageFolderPath', 'D:\\Pictures'),
@@ -129,10 +167,31 @@ function setLocalStorage(label: string) {
     case 'imageColumnName':
       localStorage.setItem('imageColumnName', imageColumnName.value);
       break;
+    case 'tagColumnNames':
+      localStorage.setItem(
+        'tagColumnNames',
+        JSON.stringify(tagColumnNames.value)
+      );
+      break;
     case 'imageFolderPath':
       localStorage.setItem('imageFolderPath', imageFolderPath.value);
       break;
   }
+}
+
+function handleChangeLine(index: number, val: string) {
+  tagColumnNames.value[index] = val;
+  setLocalStorage('tagColumnNames');
+}
+
+function handleAddLine() {
+  tagColumnNames.value = [...tagColumnNames.value, ''];
+  setLocalStorage('tagColumnNames');
+}
+
+function handleRemoveLine(index: number) {
+  tagColumnNames.value = tagColumnNames.value.filter((_, i) => i !== index);
+  setLocalStorage('tagColumnNames');
 }
 
 interface IResult {

@@ -5,6 +5,8 @@
     imageTableName: '图片表名',
     imageColumnName: '图片列名',
     imageFolderPath: '图片文件夹路径',
+    addLine: '添加行',
+    removeLine: '删除行',
     startParse: '开始解析',
 
     label: '标签',
