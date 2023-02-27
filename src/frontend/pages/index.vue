@@ -216,10 +216,14 @@ async function handleExecute() {
   });
   const data = await res.json();
   console.log(data);
-  result.value = data['data'].map((item: any) => ({
-    label: `${item}`,
-    filePath: `${item}`,
-  }));
+  if (data['success']) {
+    result.value = data['data'].map((item: any) => ({
+      label: `${item}`,
+      filePath: `${item}`,
+    }));
+  } else {
+    ElMessage.error(data['reason']);
+  }
 }
 </script>
 
@@ -233,6 +237,7 @@ import {
   ElTable,
   ElTableColumn,
   ElDivider,
+  ElMessage,
 } from 'element-plus';
 
 export default {
