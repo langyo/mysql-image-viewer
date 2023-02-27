@@ -2,7 +2,7 @@
   index: {
     title: 'SQL 图片查看器',
     databaseUrl: '数据库地址',
-    sqlStatement: '解析语句',
+    imageTableName: '图片表名',
     imageColumnName: '图片列名',
     imageFolderPath: '图片文件夹路径',
     startParse: '开始解析',

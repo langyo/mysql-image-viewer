@@ -11,33 +11,44 @@
   >
     <el-card style="width: 100%">
       <el-row>
-        <el-col :span="24">
+        <el-col :span="6">
+          <p class="label">{{ $t('index.databaseUrl') }}</p>
+        </el-col>
+        <el-col :span="18">
           <el-input
             v-model="databaseUrl"
-            :placeholder="$t('index.databaseUrl')"
             @change="() => setLocalStorage('databaseUrl')"
           />
         </el-col>
-        <el-col :span="24">
+        <el-col :span="6">
+          <p class="label">{{ $t('index.imageTableName') }}</p>
+        </el-col>
+        <el-col :span="18">
           <el-input
             v-model="imageTableName"
-            :placeholder="$t('index.imageTableName')"
             @change="() => setLocalStorage('imageTableName')"
           />
         </el-col>
-        <el-col :span="24">
+        <el-col :span="6">
+          <p class="label">{{ $t('index.imageColumnName') }}</p>
+        </el-col>
+        <el-col :span="18">
           <el-input
             v-model="imageColumnName"
-            :placeholder="$t('index.imageColumnName')"
             @change="() => setLocalStorage('imageColumnName')"
           />
         </el-col>
-        <el-col :span="24">
+        <el-col :span="6">
+          <p class="label">{{ $t('index.imageFolderPath') }}</p>
+        </el-col>
+        <el-col :span="18">
           <el-input
             v-model="imageFolderPath"
-            :placeholder="$t('index.imageFolderPath')"
             @change="() => setLocalStorage('imageFolderPath')"
           />
+        </el-col>
+        <el-col :span="24">
+          <el-divider />
         </el-col>
         <el-col :span="24">
           <el-button size="large" @click="handleExecute">
@@ -63,6 +74,15 @@
     </el-card>
   </div>
 </template>
+
+<style scoped lang="scss">
+.label {
+  margin: 8px;
+  font-size: 14px;
+  color: var(--el-text-color-regular);
+  user-select: none;
+}
+</style>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
@@ -153,6 +173,7 @@ import {
   ElInput,
   ElTable,
   ElTableColumn,
+  ElDivider,
 } from 'element-plus';
 
 export default {
@@ -164,6 +185,7 @@ export default {
     ElInput,
     ElTable,
     ElTableColumn,
+    ElDivider,
   },
 };
 </script>
